@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuang.bootplus.mapper.ProblemMapper">
+    <select id="getByConditions" resultType="com.chuang.bootplus.entity.Problem">
+        SELECT *
+        FROM problem p
+        <where>
+            <choose>
+                <!-->根据题目名称检索<-->
+                <when test="title!=null">
+                    p.title LIKE concat("%",#{title},"%")
+                </when>
+                <!-->根据日期检索<-->
+                <when test="gmtCreate!=null">
+                    p.gmt_create=#{gmtCreate}
+                </when>
+                <!-->根据相关标签检索<-->
+                <otherwise>
+                    <if test="problemLevel!=null">
+                        p.problem_level=#{problemLevel}
+                    </if>
+                    <if test="algorithmTag!=null">
+                        AND p.algorithm_tag=#{algorithmTag}
+                    </if>
+                    <if test="dataStructureTag!=null">
+                        AND p.data_structure_tag=#{dataStructureTag}
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+        AND is_delete=0
+        ORDER BY gmt_create DESC
+
+    </select>
+</mapper>
